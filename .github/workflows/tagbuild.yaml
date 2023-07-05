@@ -1,0 +1,13 @@
+name: tagbuild
+
+on:
+  push:
+    main:
+      
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    steps:
+    - name: create-version
+      run: curl http://localhost:5000/api/v1/sync/
+  

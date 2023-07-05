@@ -1,0 +1,11 @@
+VERSION: local
+PYTHON_HOST: localhost
+PYTHON_PORT: 5000
+LOGS_LEVEL: INFO
+LOGS_PATH: /tmp/docker-sync/logs/logs.log
+LOGS_BACKUPS: 2
+GIT_REPO_URL: https://github.com/brianwolf/dockers-utiles.git
+GIT_REPO_USER: null
+GIT_REPO_PASS: null
+GIT_REPO_BRANCH: main
+WORKSPACE: /tmp/docker-sync/
