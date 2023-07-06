@@ -6,13 +6,12 @@ services:
     image: brianwolf94/docker-sync:latest
     container_name: docker-sync
     hostname: docker-sync
-    restart: always
     environment:
       LOGS_LEVEL: INFO
       LOGS_BACKUPS: 2
       GIT_REPO_NAME: dockers-cluster
       GIT_REPO_USER: brianwolf
-      GIT_REPO_PASS: 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
+      GIT_REPO_PASS: <token>
       GIT_REPO_BRANCH: main
     ports:
       - 5000:5000
