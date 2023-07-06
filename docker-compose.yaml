@@ -11,7 +11,7 @@ services:
       LOGS_BACKUPS: 2
       GIT_REPO_NAME: dockers-cluster
       GIT_REPO_USER: brianwolf
-      GIT_REPO_PASS: <token>
+      GIT_REPO_PASS: ${GITHUB_TOKEN}
       GIT_REPO_BRANCH: main
     ports:
       - 5000:5000
