@@ -5,6 +5,7 @@ services:
   docker-sync:
     image: brianwolf94/docker-sync:latest
     container_name: docker-sync
+    hostname: docker-sync
     environment:
       LOGS_LEVEL: INFO
       LOGS_BACKUPS: 2
@@ -22,7 +23,7 @@ services:
 
 networks:
   docker-net:
-
+    name: docker-net
 
 volumes:
   docker-sync:
