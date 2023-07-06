@@ -8,8 +8,6 @@ services:
     environment:
       LOGS_LEVEL: INFO
       LOGS_BACKUPS: 2
-      LOGS_PATH: /home/docker-sync/logs/logs.log
-      WORKSPACE: /home/docker-sync/
       GIT_REPO_URL: https://github.com/brianwolf/dockers-cluster.git
       GIT_REPO_USER: null
       GIT_REPO_PASS: null
@@ -19,7 +17,7 @@ services:
     networks:
       - docker-net
     volumes:
-      - docker-sync:/home/docker-sync/:rw
+      - docker-sync:/home/workspace/
 
 networks:
   docker-net:
@@ -27,3 +25,4 @@ networks:
 
 volumes:
   docker-sync:
+    name: docker-sync
