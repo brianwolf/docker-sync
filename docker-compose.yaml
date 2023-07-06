@@ -18,7 +18,7 @@ services:
     networks:
       - docker-net
     volumes:
-      - docker-sync:/home/workspace/
+      - docker-sync:/home/workspace/:Z
       - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
