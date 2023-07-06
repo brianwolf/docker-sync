@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+
+  docker-sync:
+    image: brianwolf94/docker-sync:latest
+    container_name: nginx
+    environment:
+      LOGS_LEVEL: INFO
+      LOGS_BACKUPS: 2
+      LOGS_PATH: /home/docker-sync/logs/logs.log
+      WORKSPACE: /home/docker-sync/
+      GIT_REPO_URL: https://github.com/brianwolf/dockers-cluster.git
+      GIT_REPO_USER: null
+      GIT_REPO_PASS: null
+      GIT_REPO_BRANCH: main
+    ports:
+      - 5000:5000
+    networks:
+      - docker-net
+    volumes:
+      - docker-sync:/home/docker-sync/:rw
+
+networks:
+  docker-net:
+
+
+volumes:
+  docker-sync:
