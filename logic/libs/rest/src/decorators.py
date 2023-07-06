@@ -2,7 +2,7 @@ from flask import Flask
 from werkzeug.exceptions import HTTPException
 
 from logic.libs.exception.exception import AppException, UnknownException
-from logic.libs.logger import logger
+from logic.libs.logger.logger import get_log
 
 
 def add_decorators(app: Flask):

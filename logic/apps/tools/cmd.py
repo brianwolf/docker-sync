@@ -1,11 +1,12 @@
 import subprocess
-from logic.libs.logger.logger import logger
+
+from logic.libs.logger.logger import get_log
 
 
 def exec(cmd: str, echo: bool = True) -> str:
 
     if echo:
-        logger.info(cmd)
+        get_log().info(cmd)
 
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     p.wait()

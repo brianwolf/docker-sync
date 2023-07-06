@@ -3,7 +3,6 @@ import os
 
 from logic.apps.admin.config.variables import Vars
 from logic.apps.tools import cmd
-from logic.libs.logger.logger import logger
 from logic.libs.variables.variables import get_var
 
 LIST_DOCKERS_RUNNED_FILE_NAME = 'dockers_runned.json'
@@ -39,7 +38,8 @@ def _prepare_file() -> str:
         LIST_DOCKERS_RUNNED_FILE_NAME
     )
 
-    cmd.exec(f'mkdir -p {os.path.dirname(list_dockers_runned_file_path)}')
+    cmd.exec(
+        f'mkdir -p {os.path.dirname(list_dockers_runned_file_path)}', echo=False)
 
     if not os.path.exists(list_dockers_runned_file_path):
         with open(list_dockers_runned_file_path, 'w') as file:

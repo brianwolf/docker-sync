@@ -9,9 +9,9 @@ services:
     environment:
       LOGS_LEVEL: INFO
       LOGS_BACKUPS: 2
-      GIT_REPO_URL: https://github.com/brianwolf/dockers-cluster.git
-      GIT_REPO_USER: null
-      GIT_REPO_PASS: null
+      GIT_REPO_NAME: dockers-cluster
+      GIT_REPO_USER: brianwolf
+      GIT_REPO_PASS: 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
       GIT_REPO_BRANCH: main
     ports:
       - 5000:5000

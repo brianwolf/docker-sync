@@ -4,8 +4,8 @@ PYTHON_PORT: 5000
 LOGS_LEVEL: INFO
 LOGS_PATH: /tmp/docker-sync/logs/logs.log
 LOGS_BACKUPS: 2
-GIT_REPO_URL: https://github.com/brianwolf/dockers-utiles.git
-GIT_REPO_USER: null
-GIT_REPO_PASS: null
+GIT_REPO_NAME: dockers-utiles
+GIT_REPO_USER: brianwolf
+GIT_REPO_PASS: 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
 GIT_REPO_BRANCH: main
 WORKSPACE: /tmp/docker-sync/

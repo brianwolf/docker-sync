@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint
 from flask.json import jsonify
 
 from logic.apps.dockers_runned import service

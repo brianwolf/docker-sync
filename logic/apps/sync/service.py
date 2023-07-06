@@ -3,7 +3,7 @@ import os
 from logic.apps.admin.config.variables import Vars
 from logic.apps.dockers_runned import service as dockers_runned_service
 from logic.apps.tools import cmd
-from logic.libs.logger.logger import logger
+from logic.libs.logger.logger import get_log
 from logic.libs.variables.variables import get_var
 
 LIST_DOCKERS_RUNNED_FILE_NAME = 'dockers_runned.json'
@@ -17,24 +17,23 @@ def sync():
     temp_path = get_var(Vars.WORKSPACE)
     os.chdir(temp_path)
 
-    cmd.exec(f'rm -fr repo/')
+    cmd.exec(f'rm -fr repo/', echo=False)
 
     git_clone_command = _get_git_clone_command(
-        get_var(Vars.GIT_REPO_URL),
+        get_var(Vars.GIT_REPO_NAME),
         get_var(Vars.GIT_REPO_USER),
         get_var(Vars.GIT_REPO_PASS),
         get_var(Vars.GIT_REPO_BRANCH)
     )
-    logger.info(f'Cloning repository -> {git_clone_command}')
-    cmd.exec(git_clone_command)
+    cmd.exec(git_clone_command, echo=False)
 
     _run_dockers_compose('.')
     os.chdir(original_workindir)
 
 
-def _get_git_clone_command(url: str, user: str = None, password: str = None, branch: str = 'main') -> str:
+def _get_git_clone_command(repo: str, user: str = None, password: str = None, branch: str = 'main') -> str:
 
-    git_repo_url_full = url.replace('https://', '')
+    git_repo_url_full = f'github.com/{user}/{repo}.git'
 
     if user and password:
         git_repo_url_full = f'{user}:{password}@{git_repo_url_full}'
@@ -89,12 +88,12 @@ def _run_dockers_compose(base_path: str):
         docker_compose_file = os.path.basename(docker_compose_path)
 
         os.chdir(docker_compose_folder)
-        logger.info(f'{docker_compose_name}')
-        logger.info(f'Path: {docker_compose_path}')
-        logger.info(f'File: {docker_compose_file}')
-        logger.info(f'Folder: {docker_compose_folder}')
+        get_log().info(f'{docker_compose_name}')
+        get_log().info(f'Path: {docker_compose_path}')
+        get_log().info(f'File: {docker_compose_file}')
+        get_log().info(f'Folder: {docker_compose_folder}')
         cmd.exec(f'docker compose -f {docker_compose_file} up -d')
-        logger.info('')
+        get_log().info('------------------------------------------------')
         os.chdir(original_workindir)
 
         list_dockers_runned.append(docker_compose_name)
