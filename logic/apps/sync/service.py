@@ -15,9 +15,10 @@ def sync():
     original_workindir = os.getcwd()
 
     temp_path = get_var(Vars.WORKSPACE)
+    cmd.exec(f'mkdir -p {temp_path}')
     os.chdir(temp_path)
 
-    cmd.exec(f'rm -fr repo/', echo=False)
+    cmd.exec(f'rm -rf {REPO_GIT_FOLDER}')
 
     git_clone_command = _get_git_clone_command(
         get_var(Vars.GIT_REPO_NAME),
@@ -40,10 +41,7 @@ def _get_git_clone_command(repo: str, user: str = None, password: str = None, br
 
     git_repo_url_full = f'https://{git_repo_url_full}'
 
-    if branch:
-        git_repo_url_full = f'{git_repo_url_full} -b {branch}'
-
-    return f'git clone -c http.sslVerify=false {git_repo_url_full} {REPO_GIT_FOLDER}'
+    return f'git clone -c http.sslVerify=false -b {branch} {git_repo_url_full} {REPO_GIT_FOLDER}'
 
 
 def _get_list_docker_compose_paths(base_path: str) -> list[str]:

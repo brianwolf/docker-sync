@@ -11,9 +11,10 @@ RUN apt install wget curl git -y
 # install docker
 RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-24.0.2.tgz
 RUN tar -xvzf docker-24.0.2.tgz
+RUN rm docker-24.0.2.tgz
 RUN mv docker/docker /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker 
 RUN rm -fr docker/
+RUN chmod +x /usr/local/bin/docker 
 
 # install docker compose 
 RUN mkdir -p /usr/local/lib/docker/cli-plugins
