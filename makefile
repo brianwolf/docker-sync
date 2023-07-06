@@ -9,4 +9,4 @@ push p:
 
 
 run r:
-	docker run -it --rm -p 5000:5000 docker.io/brianwolf94/docker-sync:$(VERSION)
+	docker run -it --rm --name docker-sync -p 5000:5000 docker.io/brianwolf94/docker-sync:$(VERSION)
