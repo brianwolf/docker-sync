@@ -25,12 +25,9 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt --upgrade pip
 RUN rm -fr requirements.txt
 
-# make a user
-RUN chmod -R 777 /home
-RUN useradd -ms /bin/bash 1001
-USER 1001
-
 # exec app
+RUN chmod 777 /var/run/ -R
+
 COPY logic/ logic/
 COPY app.py app.py
 
