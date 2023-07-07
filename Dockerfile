@@ -1,7 +1,5 @@
 FROM python:3.10-slim
 
-USER root
-
 WORKDIR /home
 
 # install linux dependencies
@@ -27,7 +25,8 @@ RUN pip3 install -r requirements.txt --upgrade pip
 RUN rm -fr requirements.txt
 
 # exec app
-RUN chmod 777 /var/run/ -R
+RUN > /var/run/docker.sock
+RUN chmod 777 /var/run/docker.sock -R
 
 COPY logic/ logic/
 COPY app.py app.py

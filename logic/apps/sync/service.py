@@ -5,6 +5,7 @@ from logic.apps.dockers_runned import service as dockers_runned_service
 from logic.apps.tools import cmd
 from logic.libs.logger.logger import get_log
 from logic.libs.variables.variables import get_var
+import pathlib
 
 LIST_DOCKERS_RUNNED_FILE_NAME = 'dockers_runned.json'
 REPO_GIT_FOLDER = 'repo'
@@ -12,36 +13,31 @@ REPO_GIT_FOLDER = 'repo'
 
 def sync():
 
-    original_workindir = os.getcwd()
+    workspace_path = os.path.join(get_var(Vars.WORKSPACE), REPO_GIT_FOLDER)
 
-    temp_path = get_var(Vars.WORKSPACE)
-    cmd.exec(f'mkdir -p {temp_path}')
-    os.chdir(temp_path)
-
-    cmd.exec(f'rm -rf {REPO_GIT_FOLDER}')
+    cmd.exec(f'mkdir -p {workspace_path}', echo=False)
+    cmd.exec(f'rm -rf {workspace_path}', echo=False)
 
     git_clone_command = _get_git_clone_command(
         get_var(Vars.GIT_REPO_NAME),
         get_var(Vars.GIT_REPO_USER),
         get_var(Vars.GIT_REPO_PASS),
-        get_var(Vars.GIT_REPO_BRANCH)
+        get_var(Vars.GIT_REPO_BRANCH),
+        workspace_path
     )
     cmd.exec(git_clone_command, echo=False)
 
+    original_workindir = os.getcwd()
+    os.chdir(workspace_path)
     _run_dockers_compose('.')
     os.chdir(original_workindir)
 
 
-def _get_git_clone_command(repo: str, user: str = None, password: str = None, branch: str = 'main') -> str:
+def _get_git_clone_command(repo: str, user: str, password: str, branch: str, path: str) -> str:
 
-    git_repo_url_full = f'github.com/{user}/{repo}.git'
+    git_repo_url_full = f'https://{user}:{password}@github.com/{user}/{repo}.git'
 
-    if user and password:
-        git_repo_url_full = f'{user}:{password}@{git_repo_url_full}'
-
-    git_repo_url_full = f'https://{git_repo_url_full}'
-
-    return f'git clone -c http.sslVerify=false -b {branch} {git_repo_url_full} {REPO_GIT_FOLDER}'
+    return f'git clone -c http.sslVerify=false -b {branch} {git_repo_url_full} {path}'
 
 
 def _get_list_docker_compose_paths(base_path: str) -> list[str]:
@@ -86,7 +82,7 @@ def _run_dockers_compose(base_path: str):
         docker_compose_file = os.path.basename(docker_compose_path)
 
         os.chdir(docker_compose_folder)
-        get_log().info(f'{docker_compose_name}')
+        get_log().info(f'>> {docker_compose_name} <<')
         get_log().info(f'Path: {docker_compose_path}')
         get_log().info(f'File: {docker_compose_file}')
         get_log().info(f'Folder: {docker_compose_folder}')
