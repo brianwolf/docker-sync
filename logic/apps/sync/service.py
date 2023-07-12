@@ -1,41 +1,49 @@
 import os
 
 from logic.apps.admin.config.variables import Vars
-from logic.apps.dockers_runned import service as dockers_runned_service
+from logic.apps.sync.model import Compose
 from logic.apps.tools import cmd
 from logic.libs.logger.logger import get_log
 from logic.libs.variables.variables import get_var
-from logic.apps.dockers_runned.model import Compose
 
 REPO_GIT_FOLDER = 'repo'
 
 
 def sync():
 
-    cloned_repo_path = _clone_repository()
+    repo_path = get_clone_repository_path()
 
     original_workindir = os.getcwd()
-    os.chdir(cloned_repo_path)
+    os.chdir(repo_path)
 
-    list_dockers_runned = dockers_runned_service.get_list()
+    dockers_running_list = get_dockers_running_list()
 
-    for docker_compose_path in _get_list_docker_compose_paths('.'):
+    for docker_compose_path in _get_docker_compose_paths_list('./'):
 
         new_compose = Compose(docker_compose_path)
 
-        if not new_compose.name in list_dockers_runned:
-            _run_new_compose(new_compose)
+        if new_compose.name in dockers_running_list:
             continue
-        new_compose
+
+        _run_new_compose(new_compose)
 
     os.chdir(original_workindir)
 
 
-def _clone_repository() -> str:
+def get_clone_repository_path() -> str:
 
     workspace_path = os.path.join(get_var(Vars.WORKSPACE), REPO_GIT_FOLDER)
 
-    cmd.exec(f'mkdir -p {workspace_path}', echo=False)
+    if not os.path.exists(workspace_path):
+        cmd.exec(f'mkdir -p {workspace_path}', echo=False)
+
+    return workspace_path
+
+
+def clone_repository() -> str:
+
+    workspace_path = get_clone_repository_path()
+
     cmd.exec(f'rm -rf {workspace_path}', echo=False)
 
     git_clone_command = _get_git_clone_command(
@@ -50,6 +58,10 @@ def _clone_repository() -> str:
     return workspace_path
 
 
+def get_dockers_running_list() -> list[str]:
+    return cmd.exec('docker ps --format "{{.Names}}"', echo=False)
+
+
 def _get_git_clone_command(repo: str, user: str, password: str, branch: str, path: str) -> str:
 
     git_repo_url_full = f'https://{user}:{password}@github.com/{user}/{repo}.git'
@@ -57,7 +69,7 @@ def _get_git_clone_command(repo: str, user: str, password: str, branch: str, pat
     return f'git clone -c http.sslVerify=false -b {branch} {git_repo_url_full} {path}'
 
 
-def _get_list_docker_compose_paths(base_path: str) -> list[str]:
+def _get_docker_compose_paths_list(base_path: str) -> list[str]:
 
     result = []
     for (dirpath, _, files) in os.walk(base_path):

@@ -1,7 +1,7 @@
 #!env/bin/python
 from flask.app import Flask
 
-from logic.apps.admin.config.app import prepare_app
+from logic.apps.admin.config.app import prepare_threads
 from logic.apps.admin.config.logger import setup_loggers
 from logic.apps.admin.config.rest import setup_rest
 from logic.apps.admin.config.variables import Vars, setup_vars
@@ -12,7 +12,7 @@ app = Flask(__name__)
 setup_vars()
 setup_loggers()
 setup_rest(app)
-prepare_app()
+prepare_threads()
 
 if __name__ == "__main__":
     flask_host = get_var(Vars.PYTHON_HOST)
