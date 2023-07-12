@@ -8,12 +8,35 @@ from logic.apps.sync import service
 from logic.libs.logger.logger import get_log
 from logic.libs.variables.variables import get_var
 
-_THREAD_CHECKER_ACTIVE = True
 _LAST_COMMIT_SHA = ""
 
 
-def checker():
+def _checker():
 
+    last_commit = _get_last_commit_sha()
+
+    global _LAST_COMMIT_SHA
+    if _LAST_COMMIT_SHA != last_commit['sha']:
+
+        get_log().info(f'Checked new commit in repo -> sync...')
+        _LAST_COMMIT_SHA = last_commit['sha']
+        service.sync()
+
+
+def start_thread_checker():
+
+    get_log().info('Start thread -> Checker')
+
+    def thread_method():
+        while True:
+            _checker()
+            time.sleep(15)
+
+    thread = threading.Thread(target=thread_method)
+    thread.start()
+
+
+def _get_last_commit_sha() -> str:
     user = get_var(Vars.GIT_REPO_USER)
     token = get_var(Vars.GIT_REPO_PASS)
     repo = get_var(Vars.GIT_REPO_NAME)
@@ -23,32 +46,4 @@ def checker():
     }
     url = f'https://api.github.com/repos/{user}/{repo}/commits'
 
-    first_commit = requests.get(url, headers=headers).json()[0]
-
-    global _LAST_COMMIT_SHA
-    if _LAST_COMMIT_SHA != first_commit['sha']:
-        get_log().info(f'Checked commit in {repo}')
-        _LAST_COMMIT_SHA = first_commit['sha']
-        service.sync()
-
-
-def start_thread_checker():
-
-    get_log().info('Start thread -> Checker')
-
-    global _THREAD_CHECKER_ACTIVE
-    _THREAD_CHECKER_ACTIVE = True
-
-    def thread_method():
-        global _THREAD_CHECKER_ACTIVE
-        while _THREAD_CHECKER_ACTIVE:
-            checker()
-            time.sleep(15)
-
-    thread = threading.Thread(target=thread_method)
-    thread.start()
-
-
-def stop_runner_thread():
-    global _THREAD_CHECKER_ACTIVE
-    _THREAD_CHECKER_ACTIVE = False
+    return requests.get(url, headers=headers).json()[0]
