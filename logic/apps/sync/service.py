@@ -59,7 +59,7 @@ def clone_repository() -> str:
 
 
 def get_dockers_running_list() -> list[str]:
-    return cmd.exec('docker ps --format "{{.Names}}"', echo=False)
+    return cmd.exec('docker ps --format "{{.Names}}"', echo=False).split('\n')
 
 
 def _get_git_clone_command(repo: str, user: str, password: str, branch: str, path: str) -> str:
