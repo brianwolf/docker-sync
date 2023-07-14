@@ -10,4 +10,4 @@ def exec(cmd: str, echo: bool = True) -> str:
 
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     p.wait()
-    return p.stdout
+    return p.stdout.read().decode()
